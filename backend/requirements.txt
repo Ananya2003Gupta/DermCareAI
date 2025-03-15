@@ -1,0 +1,26 @@
+# Core dependencies
+fastapi
+uvicorn
+python-multipart
+pydantic
+pyngrok
+
+# Image processing
+Pillow
+opencv-python-headless
+numpy
+
+# Deep Learning
+torch
+torchvision
+tensorflow
+
+# Utilities
+python-dotenv
+python-jose
+logging
+typing-extensions
+
+# Optional but recommended
+gunicorn
+setuptools
