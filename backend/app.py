@@ -42,7 +42,7 @@ class ModelService:
         self.mobilenet = MobileNetPredictor('models/melanoma_classifier.pth')
         self.nasnet = SkinLesionClassifier('models/FinetunedNasNetMobile.keras')
         
-        # Class Mapping
+        # NASNet class mapping
         self.nasnet_classes = {
             0: 'Actinic Keratosis',
             1: 'Basal Cell Carcinoma',
@@ -74,27 +74,24 @@ class ModelService:
             
             # First prediction with MobileNetV2
             mobilenet_result = self.mobilenet.predict(processed_image)
-            predicted_class = mobilenet_result['class_index']
-            confidence = mobilenet_result['probabilities'][predicted_class]
+            mobilenet_predicted_class = mobilenet_result['class_index']
+            mobilenet_confidence = mobilenet_result['probabilities'][mobilenet_predicted_class]
             logger.info("Mobilenet prediction")
 
-            # If predicted as Non-Melanoma (0), use NASNet for detailed classification
-            if predicted_class == 0:  # Non-Melanoma
+            # If predicted as Non-Melanoma (0), use NASNetMobile for detailed classification
+            if mobilenet_predicted_class == 0:  # Non-Melanoma
                 nasnet_image = tf.cast(processed_image, tf.float32) / 255.0
-                nasnet_result = self.nasnet.predict(nasnet_image)
-                logger.info(nasnet_result['class_index'])
+                nasnet_result = self.nasnet.predict_with_gradcam(nasnet_image)
                 final_class = self.nasnet_classes[nasnet_result['class_index']]
-                logger.info(final_class)
                 final_confidence = nasnet_result['probabilities'][nasnet_result['class_index']]
-                logger.info(final_confidence)
                 model_used = "NASNetMobile"
-                visualization = self.nasnet.predict_with_gradcam(nasnet_image)['gradcam_visualization']
+                visualization = nasnet_result['gradcam_visualization']
+                logger.info("NASNetMobile prediction")
             else:
                 final_class = "Melanoma"
-                final_confidence = confidence
+                final_confidence = mobilenet_confidence
                 model_used = "MobileNetV2"
-                visualization = self.mobilenet.predict_with_gradcam(processed_image)['gradcam_visualization']
-
+                visualization = self.mobilenet.gradcam_visualization(processed_image, mobilenet_predicted_class)
             logger.info("Final prediction")
 
             # Convert Grad-CAM visualization to base64

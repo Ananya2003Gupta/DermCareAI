@@ -69,33 +69,6 @@ class SkinLesionClassifier:
         """
         return tf.keras.applications.nasnet.preprocess_input(image)
     
-    def predict(self, image: tf.Tensor) -> dict:
-        """
-        Make a prediction for an input image.
-        
-        Args:
-            image (tf.Tensor): Preprocessed input image tensor
-            
-        Returns:
-            dict: Dictionary containing prediction class and probabilities
-        """
-        # Ensure image has batch dimension
-        if len(image.shape) == 3:
-            image = tf.expand_dims(image, 0)
-            
-        # Make prediction
-        predictions = self.model.predict(image)
-        
-        # Get predicted class and probability
-        predicted_class = int(tf.argmax(predictions[0]))
-        probabilities = {i: float(prob) 
-                        for i, prob in enumerate(predictions[0])}
-        
-        return {
-            'class_index': predicted_class,
-            'probabilities': probabilities
-        }
-
     def predict_with_gradcam(self, image: tf.Tensor) -> dict:
         """
         Predict class and generate Grad-CAM visualization.
@@ -106,20 +79,15 @@ class SkinLesionClassifier:
         Returns:
             Dictionary containing prediction results and Grad-CAM visualization
         """
-        # Clone the image to avoid modifying the original
-        image_copy = tf.identity(image)
-        
-        # Ensure image has batch dimension
-        if len(image_copy.shape) == 3:
-            image_copy = tf.expand_dims(image_copy, 0)
-        
-        # Ensure image has correct shape
-        if image_copy.shape[1:3] != self.input_shape[0:2]:
-            image_copy = tf.image.resize(image_copy, self.input_shape[0:2])
-        
+        processed_image = tf.identity(image)
 
-        processed_image = self.preprocess_image(image_copy)
-        predictions = self.model.predict(processed_image)
+        # Ensure image has batch dimension
+        if len(image.shape) == 3:
+            image = tf.expand_dims(image, 0)
+            
+        # Make prediction
+        predictions = self.model.predict(image)
+        # Get predicted class and probability
         predicted_class = int(tf.argmax(predictions[0]))
         probabilities = {i: float(prob) 
                         for i, prob in enumerate(predictions[0])}
@@ -129,7 +97,7 @@ class SkinLesionClassifier:
             self.model,
             processed_image,
             predicted_class,
-            layer_name='conv2d_93'
+            layer_name='conv2d_93'  # Specify the layer name directly
         )
         
         # Apply Grad-CAM to image

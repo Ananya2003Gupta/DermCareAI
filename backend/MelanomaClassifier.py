@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ModelConfig:
-    def __init__(self):
+    def __init__(self):  # Fixed syntax: *init* -> __init__
         self.learning_rate = 0.0008
         self.dropout_rate = 0.2
         self.batch_size = 32
@@ -22,8 +22,8 @@ class ModelConfig:
         self.num_classes = 2
 
 class MobileNetV2Classifier(nn.Module):
-    def __init__(self, config: ModelConfig):
-        super(MobileNetV2Classifier, self).__init__()
+    def __init__(self, config: ModelConfig):  # Fixed syntax: *init* -> __init__
+        super(MobileNetV2Classifier, self).__init__()  # Fixed syntax: _init_() -> __init__()
         self.model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
         
         # Modify the classifier
@@ -103,34 +103,35 @@ class MobileNetPredictor:
         Returns:
             dict: Dictionary containing prediction probabilities
         """
-        image_tensor = self.prepare_image(image_array)
-        outputs = self.model(image_tensor)
-        probabilities = torch.softmax(outputs, dim=1)
-        
-        return {
-            'class_index': int(torch.argmax(probabilities).item()),
-            'probabilities': probabilities[0].tolist()
-        }
-
-    def predict_with_gradcam(self, image_array: np.ndarray) -> dict:
-        """
-        Predict class and generate Grad-CAM visualization.
-        
-        Args:
-            image_array: Input image as numpy array
-            
-        Returns:
-            Dictionary containing prediction results and Grad-CAM visualization
-        """
         # Prepare image
         input_tensor = self.prepare_image(image_array)
         
+        self.model.eval()
         # Get prediction
         with torch.no_grad():
             output = self.model(input_tensor)
             probabilities = torch.softmax(output, dim=1)
-            predicted_class = torch.argmax(probabilities).item()
+            predicted_class = int(torch.argmax(probabilities).item())
         
+        return {
+            'class_index': predicted_class,
+            'probabilities': probabilities[0].cpu().numpy()
+        }
+
+    def gradcam_visualization(self, image_array: np.ndarray, predicted_class : int) -> np.ndarray:
+        """
+        Generate Grad-CAM visualization
+        
+        Args:
+            image_array: Input image as numpy array
+            predicted_class: Integer label of predicted class
+            
+        Returns:
+            Grad-CAM visualization image
+        """
+        # Prepare image
+        input_tensor = self.prepare_image(image_array)
+
         # Generate Grad-CAM visualization
         original_image, heatmap = pytorch_grad_cam(
             self.model,
@@ -142,8 +143,4 @@ class MobileNetPredictor:
         # Apply Grad-CAM to image
         visualization = apply_grad_cam(original_image, heatmap)
         
-        return {
-            'class_index': int(predicted_class),
-            'probabilities': probabilities[0].cpu().numpy(),
-            'gradcam_visualization': visualization
-        }
+        return  visualization
