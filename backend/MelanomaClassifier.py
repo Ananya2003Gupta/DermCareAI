@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class ModelConfig:
-    def __init__(self):  # Fixed syntax: *init* -> __init__
+    def __init__(self):
         self.learning_rate = 0.0008
         self.dropout_rate = 0.2
         self.batch_size = 32
@@ -22,8 +22,8 @@ class ModelConfig:
         self.num_classes = 2
 
 class MobileNetV2Classifier(nn.Module):
-    def __init__(self, config: ModelConfig):  # Fixed syntax: *init* -> __init__
-        super(MobileNetV2Classifier, self).__init__()  # Fixed syntax: _init_() -> __init__()
+    def __init__(self, config: ModelConfig):
+        super(MobileNetV2Classifier, self).__init__()
         self.model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.IMAGENET1K_V1)
         
         # Modify the classifier

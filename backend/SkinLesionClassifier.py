@@ -97,7 +97,7 @@ class SkinLesionClassifier:
             self.model,
             processed_image,
             predicted_class,
-            layer_name='conv2d_93'  # Specify the layer name directly
+            layer_name='conv2d_93'
         )
         
         # Apply Grad-CAM to image
