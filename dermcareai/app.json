@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "DermCareAI",
+    "slug": "dermcareai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icons/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./src/assets/icons/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.dermcareai"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/icons/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourcompany.dermcareai"
+    },
+    "web": {
+      "favicon": "./src/assets/icons/favicon.png"
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-secure-store"
+    ],
+    "newArchEnabled": true
+  }
+}
