@@ -1,6 +1,8 @@
 # DermCareAI  - Dermatologist Patient Management App
 
-A comprehensive mobile application for dermatologists to manage their patients, appointments, and medical records.
+A comprehensive mobile clinic for dermatologists to manage their patients, appointments, and medical records.
+
+It is designed for independent dermatologists and use in remote/rural areas where PC setup might be too costly and difficult to maintain.
 
 ## Features
 
