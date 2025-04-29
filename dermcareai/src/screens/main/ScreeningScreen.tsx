@@ -187,20 +187,20 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
     try {
       console.log('Analyzing image with URI:', imageUri);
       const result = await api.analyzeSkinImage(imageUri);
-      
+
       if (!result || !result.visualization) {
         throw new Error('Invalid response from analysis API');
       }
-      
+
       const processedImageUrl = `data:image/png;base64,${result.visualization}`;
       setProcessedImage(processedImageUrl);
-      
+
       if (!result.class_name) {
         throw new Error('No condition detected in the image');
       }
-      
+
       const recommendations = api.getRecommendations(result.class_name);
-      
+
       const analysisResult: AnalysisResult = {
         condition: result.class_name,
         confidence: result.confidence,
@@ -208,7 +208,7 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
         recommendations,
         imageUrl: imageUri
       };
-      
+
       setResult(analysisResult);
 
       // Save the screening report
@@ -235,7 +235,7 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
 
       // Reset state before navigation
       resetScreeningState();
-      
+
       // Navigate to the report screen
       navigation.navigate('ScreeningReport', {
         report: {
@@ -265,13 +265,13 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
       );
 
       const appointmentSnapshot = await getDocs(appointmentsQuery);
-      
+
       const upcomingAppointments = appointmentSnapshot.docs
         .map(doc => ({
           id: doc.id,
           ...doc.data()
         } as Appointment))
-        .filter(apt => 
+        .filter(apt =>
           apt.patientId === patientId &&
           new Date(apt.date) >= new Date() &&
           apt.status === 'scheduled'
@@ -302,6 +302,9 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
     <ScrollView style={styles.container}>
       <Surface style={styles.surface}>
         <Text style={styles.title}>Skin Condition Screening</Text>
+        <Text style={[styles.disclaimer, styles.warning]}>
+          ⚠️ Disclaimer: This is a research prototype, not clinically validated, and should not replace clinical judgment or be the sole basis for decisions.
+        </Text>
 
         {/* Patient Selection */}
         <Card style={styles.patientCard}>
@@ -327,7 +330,7 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
             </ScrollView>
           </Card.Content>
         </Card>
-        
+
         {selectedPatient && (
           <>
             <View style={styles.imageActions}>
@@ -359,9 +362,12 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
                   {processedImage && (
                     <>
                       <Text style={[styles.imageLabel, { marginTop: 16 }]}>
-                      AI Focus Map:
+                        AI Focus Map:
                       </Text>
                       <Image source={{ uri: processedImage }} style={styles.image} />
+                      <Text style={styles.disclaimer}>
+                        ⚠️ This AI-generated focus map is part of the research prototype and is not clinically validated. It should not be used as the sole basis for diagnosis or treatment.
+                      </Text>
                     </>
                   )}
                 </Card.Content>
@@ -388,8 +394,8 @@ const ScreeningScreen: React.FC<NavigationProps<'Screening'>> = ({ navigation, r
                   <Text>Type: {upcomingAppointment.type}</Text>
                   <Button
                     mode="outlined"
-                    onPress={() => navigation.navigate('AppointmentDetails', { 
-                      appointment: upcomingAppointment 
+                    onPress={() => navigation.navigate('AppointmentDetails', {
+                      appointment: upcomingAppointment
                     })}
                     style={styles.viewAppointmentButton}
                   >
@@ -420,6 +426,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 24,
     textAlign: 'center',
+  },
+  disclaimer: {
+    fontSize: 14,
+    color: '#333',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  warning: {
+    fontWeight: 'bold',
+    color: '#D9534F',
   },
   patientCard: {
     marginBottom: 16,

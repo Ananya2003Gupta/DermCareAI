@@ -53,74 +53,89 @@ const ScreeningReportScreen: React.FC<NavigationProps<'ScreeningReport'>> = ({
 
   const generateHTML = () => {
     return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .section { margin-bottom: 20px; }
-            .label { font-weight: bold; margin-bottom: 5px; }
-            .value { margin-bottom: 15px; }
-            .images { display: flex; justify-content: center; margin: 20px 0; }
-            .image { width: 100%; }
-            img { max-width: 100%; height: auto; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>Skin Condition Screening Report</h1>
-            <p>Date: ${format(new Date(report.date), 'MMMM d, yyyy')}</p>
-          </div>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 40px; padding: 0; background-color: #f9f9f9; }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .section { 
+          margin-bottom: 20px; 
+          padding: 20px; 
+          background-color: white; 
+          border-radius: 8px; 
+          border: 1px solid #e0e0e0; 
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+        .label { font-weight: bold; margin-bottom: 5px; font-size: 16px; }
+        .value { font-size: 14px; margin-bottom: 10px; }
+        .images { display: flex; justify-content: center; margin: 10px 0; }
+        .image { width: 100%; max-width: 500px; }
+        img { max-width: 100%; height: auto; display: block; border-radius: 8px; }
+        .ai-section { margin-top: 20px; }
+        .disclaimer { font-size: 12px; color: #888; margin-top: 20px; }
+        .value ul { padding-left: 20px; font-size: 14px; }
+        .value ul li { margin-bottom: 5px; }
+        .section-without-border { border: none; padding: 0; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>Skin Condition Screening Report</h1>
+        <p style="font-size: 14px; margin-top: 0;">Date: ${format(new Date(report.date), 'MMMM d, yyyy')}</p>
+      </div>
 
-          <div class="section">
-            <div class="label">Patient Name:</div>
-            <div class="value">${report.patientName}</div>
-          </div>
+      <!-- Patient Info & Screening Image Section -->
+      <div class="section section-without-border">
+        <div class="label">Patient Name:</div>
+        <div class="value">${report.patientName}</div>
 
-          <div class="section">
-            <div class="label">Image:</div>
-            <div class="images">
-              <div class="image">
-                <img src="${report.imageUrl}" alt="Screening Image" />
-              </div>
-            </div>
+        <div class="label">Screening Image:</div>
+        <div class="images">
+          <div class="image">
+            <img src="${report.imageUrl}" alt="Screening Image" />
           </div>
+        </div>
+      </div>
 
-          <div class="section">
-            <div class="label">Image:</div>
-            <div class="images">
-              <div class="image">
-                <img src="${report.processedImageUrl}" alt="AI Focus Map" />
-              </div>
-            </div>
+      <!-- AI Section -->
+      <div class="ai-section section">
+        <div class="label">AI Focus Map:</div>
+        <div class="images">
+          <div class="image">
+            <img src="${report.processedImageUrl}" alt="AI Focus Map" />
           </div>
+        </div>
 
-          <div class="section">
-            <div class="label">Analysis Results:</div>
-            <div class="value">
-              <p>Detected Condition: ${report.condition}</p>
-              <p>Confidence: ${(report.confidence * 100).toFixed(1)}%</p>
-              <p>Analysis Model: ${report.model}</p>
-            </div>
-          </div>
+        <div class="label">Analysis Results:</div>
+        <div class="value">
+          <p><strong>Detected Condition:</strong> ${report.condition}</p>
+          <p><strong>Confidence:</strong> ${(report.confidence * 100).toFixed(1)}%</p>
+          <p><strong>Analysis Model:</strong> ${report.model}</p>
+        </div>
 
-          <div class="section">
-            <div class="label">Recommendations:</div>
-            <div class="value">
-              <ul>
-                ${report.recommendations.map(rec => `<li>${rec}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
+        <div class="label">Recommendations:</div>
+        <div class="value">
+          <ul>
+            ${report.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+          </ul>
+        </div>
 
-          <div class="section">
-            <div class="label">Doctor's Notes:</div>
-            <div class="value">${doctorNotes || 'No notes provided'}</div>
-          </div>
-        </body>
-      </html>
-    `;
+        <!-- Disclaimer for AI Sections -->
+        <div class="disclaimer">
+          <strong>⚠️ Disclaimer:</strong> The 'AI Focus Map', 'Analysis Results', and 'Recommendations' are generated by an AI system. This is a research prototype, not clinically validated, and is intended to support — not replace — clinical judgment. It is not intended for standalone diagnostic use.
+        </div>
+      </div>
+
+      <!-- Doctor's Notes Section -->
+      <div class="section">
+        <div class="label">Doctor's Notes:</div>
+        <div class="value">${doctorNotes || 'No notes provided'}</div>
+      </div>
+    </body>
+  </html>
+`;
   };
 
   const shareReport = async () => {
@@ -130,9 +145,9 @@ const ScreeningReportScreen: React.FC<NavigationProps<'ScreeningReport'>> = ({
         html,
         base64: false
       });
-      
+
       const pdfName = `screening_report_${format(new Date(report.date), 'yyyyMMdd')}.pdf`;
-      
+
       if (Platform.OS === 'android') {
         const pdfPath = `${FileSystem.documentDirectory}${pdfName}`;
         await FileSystem.moveAsync({
@@ -202,8 +217,8 @@ const ScreeningReportScreen: React.FC<NavigationProps<'ScreeningReport'>> = ({
         ...doc.data()
       })) as Appointment[];
 
-      const upcomingAppointments = allAppointments.filter(apt => 
-        apt.patientId === report.patientId && 
+      const upcomingAppointments = allAppointments.filter(apt =>
+        apt.patientId === report.patientId &&
         new Date(apt.date) >= new Date() &&
         apt.status === 'scheduled'
       );
@@ -232,6 +247,14 @@ const ScreeningReportScreen: React.FC<NavigationProps<'ScreeningReport'>> = ({
             style={styles.closeButton}
           />
         </View>
+
+        <Card style={styles.section}>
+          <Card.Content>
+            <Text style={styles.disclaimer}>
+              ⚠️ Disclaimer: The 'AI Focus Map', 'Analysis Results', and 'Recommendations' are generated by an AI system. This is a research prototype, not clinically validated, and is intended to support — not replace — clinical judgment. It is not intended for standalone diagnostic use.
+            </Text>
+          </Card.Content>
+        </Card>
 
         <Card style={styles.section}>
           <Card.Content>
@@ -374,6 +397,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  disclaimer: {
+    fontSize: 15,
+    color: '#888',
+    fontWeight: 'bold',
   },
   closeButton: {
     position: 'absolute',

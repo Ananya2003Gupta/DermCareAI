@@ -103,7 +103,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
       });
 
       // Show success message and navigate
-      alert('Registration successful! Please sign in.');
+      alert('Registration successful! Welcome :)');
       navigation.replace('MainTabs');
 
     } catch (err) {
