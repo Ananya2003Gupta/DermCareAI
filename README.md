@@ -1,22 +1,30 @@
 # DermCareAI  - Dermatologist Patient Management App
 
-A comprehensive mobile clinic for dermatologists to manage their patients, appointments, and medical records.
-It is designed for independent dermatologists and use in remote/rural areas where PC setup might be too costly and difficult to maintain.
+### A comprehensive mobile clinic for dermatologists to manage their patients, appointments, and medical records.
+### It is designed for independent dermatologists and use in remote/rural areas where PC setup might be too costly and difficult to maintain.
 
-⚠️ **Disclaimer**: The AI-based skin cancer screening feature included in DermCareAI is intended for research and educational purposes only. It has not been clinically tested or approved for medical diagnosis or treatment. Users should consult licensed medical professionals for any clinical decisions.
+## ⚠️ Medical Disclaimer
+
+DermCareAI is a mobile application developed as part of an undergraduate major research project. It is intended to support dermatologists in managing patients, appointments, and medical records, especially in remote or resource-limited environments where conventional setups may not be feasible.
+
+The AI-based skin cancer screening feature is experimental, developed strictly for research and educational purposes, and has not been clinically validated or approved by any regulatory or medical authority. It is not intended for clinical diagnosis or treatment, and must not be used for medical decision-making.
+
+DermCareAI is a digital aid tool and not a substitute for professional medical advice, diagnosis, or treatment. Always consult a licensed medical professional for any health-related concerns or decisions.
 
 ## Features
 
 - Patient Profile Management
 - Appointment Scheduling
 - Medical Records Management
-- AI-based Skin Cancer Screening *(Research tool; not clinically validated)*
+- AI-based Skin Cancer Screening *(Research prototype; not clinically validated)*
 - Digital Prescriptions & Notes
 - Reports & Analytics
 - Secure Data Storage
 - Calendar Integration
 - Multi-User Support
 - AI Assistance
+
+⚠️ **Disclaimer**: AI-based Skin Cancer Screening feature is designed solely for research and educational purposes. This feature is not clinically validated and is not approved for medical diagnosis, treatment, or decision-making. It must not be used as a substitute for professional medical judgment. Clinicians and dermatologists are advised to consult certified diagnostic tools and rely on licensed medical expertise for all clinical evaluations and treatment decisions.
 
 ## Tech Stack
 
@@ -149,7 +157,3 @@ Ensure `ngrok` is properly configured if you face any issues.
 3. Commit your changes
 4. Push to the branch
 5. Create a new Pull Request
-
-## Medical Disclaimer
-
-DermCareAI is a digital aid tool and not a substitute for professional medical advice, diagnosis, or treatment. The AI-based skin cancer screening feature is experimental and has not been reviewed or approved by any regulatory authority. Always seek the advice of a qualified healthcare provider with any questions regarding a medical condition.
