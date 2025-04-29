@@ -18,7 +18,6 @@ tensorflow
 # Utilities
 python-dotenv
 python-jose
-logging
 typing-extensions
 
 # Optional but recommended
